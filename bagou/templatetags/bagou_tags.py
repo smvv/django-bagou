@@ -11,9 +11,3 @@ def bagou_static(context):
     context['STATIC_URL'] = settings.STATIC_URL
     context['WEBSOCKET_URL'] = settings.BAGOU.get('WEBSOCKET_URL')
     return context
-
-
-@register.inclusion_tag("bagou_scripts.debug.html", takes_context=True)
-def bagou_static_debug(context):
-    context['WEBSOCKET_URL'] = settings.BAGOU.get('WEBSOCKET_URL')
-    return context

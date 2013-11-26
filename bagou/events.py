@@ -69,7 +69,7 @@ class Event(object):
             else:
                 matches = [pattern.match(c) for c in client.channels if pattern]
             if no_channel or filter(None, matches):
-                handler(handler, message, *args)
+                handler(client, message, *args)
 
 on_message = Event()
 on_subscribe = Event()

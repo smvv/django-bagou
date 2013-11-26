@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import pika
+import json
 import logging
 
 from django.conf import settings
@@ -71,9 +72,17 @@ class PikaClient(object):
         self.notify_listeners(body)
 
     def notify_listeners(self, event_obj):
+        event_json = json.loads(event_obj)
+        channel = event_json.get('channel')
+
         for listener in self.event_listeners:
-            listener.write_message(event_obj)
-            logger.info('Notified %s' % repr(listener))
+            if channel:
+                if channel in listener.channels:
+                    listener.write_message(event_obj)
+                    logger.info('Notified %s' % repr(listener))
+            else:
+                listener.write_message(event_obj)
+                logger.info('Notified %s' % repr(listener))
 
     def add_event_listener(self, listener):
         self.event_listeners.add(listener)
