@@ -1,0 +1,4 @@
+*.pyc
+virtenv
+*.egg-info
+dist
