@@ -8,6 +8,32 @@ synchronous application with RabbitMQ as message bus.
 
 Server is Tornado WebSocketHandler with a PikaClient consumer.
 
+Example
+-------
+
+::
+
+    <head>
+        {% load bagou_tags %}
+        {% bagou_static %}
+        <script>
+            var ws = $.websocket(WEBSOCKET_URL, {
+                open: function(){
+                    console.log('Socket opened');
+                    ws.subscribe('room');
+                },
+                close: function(){
+                    console.log('Socket closed');
+                },
+                events: {
+                    message: function(msg){
+                        console.log('Message received');
+                    }
+                }
+            }
+        </script>
+    </body>
+
 
 Incoming
 --------
