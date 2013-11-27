@@ -2,3 +2,4 @@
 virtenv
 *.egg-info
 dist
+*.sqlite3
