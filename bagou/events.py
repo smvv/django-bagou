@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class EventError(Exception):
@@ -65,12 +68,14 @@ class Event(object):
         for handler, pattern in self.handlers:
             no_channel = not pattern and not client.channels
             if self.name.endswith("subscribe") and pattern:
+                logger.error(args)
                 matches = [pattern.match(args[0])]
             else:
                 matches = [pattern.match(c) for c in client.channels if pattern]
             if no_channel or filter(None, matches):
                 handler(client, message, *args)
 
+on_store = Event()
 on_message = Event()
 on_subscribe = Event()
 on_unsubscribe = Event()

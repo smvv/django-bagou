@@ -4,12 +4,15 @@ from bagou.utils.message import broadcast
 from bagou.utils.message import broadcast_to_channel
 
 
-@on_message(channel=r"room")
-def broadcaster(client, message):
-    broadcast(type='message', data={'name': 'Jean', 'text': message['data']})
-
-
 @on_message(channel=r".*")
-def channel_broadcaster(client, message):
+def broadcaster(client, message):
     broadcast_to_channel(
-        type='message', channel='room', data={'name': 'Miki', 'text': 'Im here'})
+        type='message',
+        channel=client.channels[0],
+        data={'name': client.store.get('username', 'Unknown'), 'text': message['data']})
+
+
+# @on_message(channel=r".*")
+# def channel_broadcaster(client, message):
+#     broadcast_to_channel(
+#         type='message', channel='room', data={'name': 'Miki', 'text': 'Im here'})

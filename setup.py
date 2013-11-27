@@ -32,6 +32,7 @@ setup(
     url='https://github.com/socketubs/bagou',
     author='Geoffrey Lehée',
     author_email='hello@socketubs.org',
+    install_requires=['tornado==3.1.1', 'pika==0.9.13'],
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',

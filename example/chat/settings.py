@@ -27,9 +27,10 @@ TEMPLATE_DEBUG = True
 ALLOWED_HOSTS = []
 
 BAGOU = {
-    'WEBSOCKET_URL': "ws://192.168.0.129:9001/websocket",
+    'WEBSOCKET_URL': "ws://192.168.1.65:9000/websocket",
     'QUEUE_NAME': 'bagou'
 }
+
 STATICFILE_DIRS = (
     os.path.join(BASE_DIR, 'chat', 'discuss', 'static'), )
 TEMPLATE_DIRS = (

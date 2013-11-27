@@ -79,7 +79,7 @@ class PikaClient(object):
             if channel:
                 if channel in listener.channels:
                     listener.write_message(event_obj)
-                    logger.info('Notified %s' % repr(listener))
+                    logger.info('Notified %s (channels: %s)' % (repr(listener), listener.channels))
             else:
                 listener.write_message(event_obj)
                 logger.info('Notified %s' % repr(listener))
