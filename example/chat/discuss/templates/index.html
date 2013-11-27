@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+{% load bagou_tags %}
+{% bagou_static %}
+<script src="{{ STATIC_URL }}js/chat.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}css/chat.css" type="text/css">
+
+<title>Bagou - Chat</title>
+</head>
+<body>
+  <div id="wrapper">
+    <div id="container">
+        <div id="alerts"></div>
+        <input id="field1" type="text" />
+        <button id="Submit">Submit</button>
+        <button id="disconnect">Disconnect</button>
+    </div>
+  </div>
+</body>
+</html>
