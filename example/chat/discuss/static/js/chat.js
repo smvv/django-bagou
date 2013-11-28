@@ -1,13 +1,13 @@
 function isReady(callback) {
   var readyStateCheckInterval = setInterval(function() {
-      if (document.readyState === "interactive") {
+      if (document.readyState === "complete") {
           if (callback) callback();
           clearInterval(readyStateCheckInterval);
       }
   }, 10);
 }
 
-isReady(function() {
+function loadChat() {
   try {
     var ws = BagouWebSocket(WEBSOCKET_URL, {
       open: function() {
@@ -37,7 +37,7 @@ isReady(function() {
   };
   function setStatus(status) {
     var statusBar = document.getElementsByClassName('status')[0];
-    statusBar.innerHTML = '| Socket status: ' + status;
+    statusBar.innerHTML = 'Socket status: ' + status;
   };
   // ROOM
   document.getElementById('submit').onclick = function(){
@@ -45,8 +45,8 @@ isReady(function() {
     document.getElementById('field').value = '';
   };
   document.getElementById('disconnect').onclick = function(){
-    ws.emit('message', "I'm disconnected.");
     ws.close();
+    message('Disconnected.');
   };
   document.getElementById('field').onkeypress = function(e) {
     if (e.keyCode == 13) {
@@ -63,7 +63,7 @@ isReady(function() {
     });
 
     document.getElementsByClassName('room-name')[0].innerHTML = room;
-    document.getElementsByClassName('status')[0].innerHTML += '<br />| Username: ' + username;
+    document.getElementsByClassName('status')[0].innerHTML += ' | Username: ' + username;
 
     document.getElementsByClassName('home')[0].style.display = 'none';
     document.getElementsByClassName('room')[0].style.display = '';
@@ -76,4 +76,4 @@ isReady(function() {
       join();
     }
   }
-});
+};

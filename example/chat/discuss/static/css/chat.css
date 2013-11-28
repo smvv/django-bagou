@@ -47,8 +47,8 @@ html, body{
 .signbox{
     margin: 50px auto;
     background-color: #fff;
-    width: 30%;
-    height: 300px;
+    width: 20%;
+    padding: 30px;
 }
 h1{
     font-size: 20px;
@@ -56,6 +56,10 @@ h1{
     margin:0px;
     font-family: 'fira_sans_otbold';
     font-weight: normal;
+}
+hr{
+    border: none;
+    border-top: 1px solid #dadae3;
 }
 .signbox h1{
     text-align: center;
@@ -65,7 +69,21 @@ h1{
 }
 .signbox hr{
 }
-
+.signbox input{
+    border: 1px solid #dadae3;
+    padding: 15px;
+    width: 90%;
+    outline: none;
+    margin: 5px 0px;
+}
+.connect{
+    margin-top: 20px;
+}
+#join{
+    width: 100px;
+    display: block;
+    margin: 20px auto;
+}
 /*ROOM*/
 div.input {
     bottom: 0px;
@@ -79,8 +97,7 @@ div.input input{
     border: 1px solid #fff;
 
 }
-div.input input:focus{
-    font-family: 'fira_sans_otitalic';
+input:focus{
     border: 1px solid #55B9BE;
 }
 #field{
@@ -94,14 +111,23 @@ div.input input:focus{
     padding:20px;
     font-size: 13px;
     color: #1F1F1F;
+    padding-top: 100px;
 }
-.actions button{
+button{
     font-family: 'fira_sans_otregular';
     padding: 15px;
     background-color: #55B9BE;
     color: #fff;
     font-weight: bold;
     border: none;
+    outline: none;
+    cursor: pointer;
+}
+button:hover, #disconnect:hover{
+    background-color: #2B4472;
+}
+#disconnect{
+    background-color: #FF4545;
 }
 .actions{
     float: left;
@@ -109,14 +135,18 @@ div.input input:focus{
 }
 #header{
     background-color: #26365C;
-    padding:25px 30px;
+    padding:25px 0px;
     color:#fff;
+    width: 100%;
+    position: fixed;
+}
+.infos{
+    float: right;
 }
 .infos .status{
     font-size: 15px;
-    float: left;
-    margin-left: 5px;
     margin-top:5px;
+    padding-right: 30px;
     font-family: 'fira_sans_otitalic';
 }
 p.message{
@@ -130,4 +160,8 @@ p.message .time{
     color:#dadae3;
     font-size: 12px;
     font-family: 'fira_sans_otitalic';
+}
+h1.room-name{
+    float: left;
+    padding-left: 30px;
 }

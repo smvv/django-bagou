@@ -6,15 +6,22 @@
     <script src="{{ STATIC_URL }}js/chat.js"></script>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/chat.css" type="text/css">
     <title>Bagou - Chat</title>
+    <script type="text/javascript">
+      isReady(function() {
+        loadChat();
+      });
+    </script>
 </head>
 <body>
     <div class="home">
        <div class="signbox">
            <h1>Welcome to Django Bagou</h1>
            <hr>
-           <input id="username" type="text" placeholder="Choose your username..." autofocus />
-           <input id="room" type="text" placeholder="Choose a room name" />
-           <button id="join">Join room!</button>
+           <div class="connect">
+             <input id="username" type="text" placeholder="Choose your username" autofocus />
+             <input id="room" type="text" placeholder="Choose a room name" />
+             <button id="join">Join room!</button>
+            </div>
        </div>
     </div>
     <div class="room" style="display: none;">
@@ -27,7 +34,7 @@
         </div>
         <div id="alerts"></div>
         <div class="input">
-            <input id="field" type="text" placeholder="Type your message here..." autofocus />
+            <input id="field" type="text" placeholder="Type your message here" autofocus />
             <div class="actions">
                 <button id="submit">Submit</button>
                 <button id="disconnect">Disconnect</button>
