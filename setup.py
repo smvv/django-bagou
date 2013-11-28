@@ -26,7 +26,7 @@ setup(
         'bagou.management',
         'bagou.management.commands'],
     include_package_data=True,
-    license='BSD License',
+    license='MIT License',
     description='A simple Django app to conduct Web-based polls.',
     long_description=README,
     url='https://github.com/socketubs/bagou',
@@ -37,8 +37,7 @@ setup(
         'Environment :: Web Environment',
         'Framework :: Django',
         'Intended Audience :: Developers',
-        # TODO: Set to MIT
-        'License :: OSI Approved :: BSD License',  # example license
+        'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         # replace these appropriately if you are using Python 3
