@@ -8,31 +8,20 @@ synchronous application with RabbitMQ as message bus.
 
 Server is Tornado WebSocketHandler with a PikaClient consumer.
 
-Example
--------
+Demo
+----
 
 ::
-
-    <head>
-        {% load bagou_tags %}
-        {% bagou_static %}
-        <script>
-            var ws = $.websocket(WEBSOCKET_URL, {
-                open: function(){
-                    console.log('Socket opened');
-                    ws.subscribe('room');
-                },
-                close: function(){
-                    console.log('Socket closed');
-                },
-                events: {
-                    message: function(msg){
-                        console.log('Message received');
-                    }
-                }
-            }
-        </script>
-    </body>
+    git clone https://github.com/socketubs/django-bagou.git
+    cd django-bagou/example
+    virtualenv virtenv
+    source virtenv/source/activate
+    pip install django
+    pip install -e ..
+    python manage.py runserver
+    # In another terminal
+    python manage.py runwebsocket
+    # Go to http://localhost:8000
 
 
 Incoming
@@ -62,9 +51,7 @@ pushed to websockets.
 Todo
 ----
 
-Create Django application.
-
- * Full settings
- * Management command
+ * Channel permission
+ * User authentification based on sessionid
  * Integrated with Celery ?
- * Helpers for sending amqp message
+ * Helpers for getting channels
