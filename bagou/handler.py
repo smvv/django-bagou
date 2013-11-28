@@ -24,6 +24,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         self.store = {}
 
         self.application.pika_client.add_event_listener(self)
+
         on_open.send(self)
         logger.info("WebSocket opened")
 

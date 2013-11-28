@@ -63,11 +63,18 @@ class Event(object):
         In the case of subscribe/unsubscribe, match the channel arg
         being sent to the channel pattern.
         """
+        # Call at least callback if no handler set
         if message and not self.handlers:
             callback = message.get('callbackId')
             if callback:
                 client.jsonify(callbackId=callback, event='callback')
+
         for handler, pattern in self.handlers:
+            # Simple handler for open and close
+            if self.name in ['on_open', 'on_close']:
+                handler(client)
+                continue
+
             no_channel = not pattern and not client.channels
             if self.name.endswith("subscribe") and pattern:
                 logging.error(args)
@@ -76,10 +83,10 @@ class Event(object):
                 matches = [pattern.match(c) for c in client.channels if pattern]
 
             if no_channel or filter(None, matches):
-                channel = message.get('channel', [])
-                if not isinstance(channel, list):
-                    channel = [channel]
-                callback = message.get('callbackId')
+                channel = client.channels
+                callback = None
+                if message:
+                    callback = message.get('callbackId')
                 handler(client, channel, message, callback)
 
 on_message = Event()
