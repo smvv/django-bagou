@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 __version__ = "0.0.1"
 
+import logging
 from urlparse import urlparse
 from django.utils.importlib import import_module
 from django.conf import settings as django_settings
+
+logging.basicConfig()
+logger = logging.getLogger('bagou.general')
+logger.setLevel(logging.INFO)
 
 if not hasattr(django_settings, 'BAGOU'):
     settings = {}
@@ -34,5 +39,6 @@ settings['AMQP_BROKER_PATH'] = __amqp_url.path
 for app in django_settings.INSTALLED_APPS:
     try:
         import_module("%s.events" % app)
-    except ImportError:
+    except ImportError as err:
+        logger.info('No events found in %s (%s)' % (app, err))
         pass

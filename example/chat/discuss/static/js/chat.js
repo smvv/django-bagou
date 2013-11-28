@@ -19,6 +19,7 @@ isReady(function() {
       events: {
         message: function(msg){
           message('<span class="time">[10-23-20 12:30:33]</span>  <span class="username">' + msg.data.name + '</span> ' + msg.data.text);
+          window.scrollTo(0,document.body.scrollHeight);
         }
       }
     });
@@ -32,7 +33,7 @@ isReady(function() {
   };
   function send(){
     var field = document.getElementById('field');
-    ws.send('message', field.value);
+    ws.emit('message', field.value);
   };
   function setStatus(status) {
     var statusBar = document.getElementsByClassName('status')[0];
@@ -40,12 +41,11 @@ isReady(function() {
   };
   // ROOM
   document.getElementById('submit').onclick = function(){
-    message('Waiting for response from server');
     send();
     document.getElementById('field').value = '';
   };
   document.getElementById('disconnect').onclick = function(){
-    ws.send('message', "I'm disconnected.");
+    ws.emit('message', "I'm disconnected.");
     ws.close();
   };
   document.getElementById('field').onkeypress = function(e) {
@@ -58,8 +58,9 @@ isReady(function() {
   function join() {
     var username = document.getElementById('username').value;
     var room = document.getElementById('room').value;
-    ws.subscribe(room);
-    ws.store('username', username);
+    ws.store('username', username, function() {
+      ws.subscribe(room);
+    });
 
     document.getElementsByClassName('room-name')[0].innerHTML = room;
     document.getElementsByClassName('status')[0].innerHTML += '<br />| Username: ' + username;

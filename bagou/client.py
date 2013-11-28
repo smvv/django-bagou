@@ -7,7 +7,7 @@ from django.conf import settings
 
 from pika.adapters.tornado_connection import TornadoConnection
 
-logger = logging.getLogger("Pika   ")
+logger = logging.getLogger("pika")
 logger.setLevel(logging.INFO)
 
 
@@ -73,16 +73,17 @@ class PikaClient(object):
 
     def notify_listeners(self, event_obj):
         event_json = json.loads(event_obj)
-        channel = event_json.get('channel')
+        channels = event_json.get('channel')
 
-        for listener in self.event_listeners:
-            if channel:
-                if channel in listener.channels:
+        for channel in channels:
+            for listener in self.event_listeners:
+                if channel:
+                    if channel in listener.channels:
+                        listener.write_message(event_obj)
+                        logger.info('Notified %s (channels: %s)' % (repr(listener), listener.channels))
+                else:
                     listener.write_message(event_obj)
-                    logger.info('Notified %s (channels: %s)' % (repr(listener), listener.channels))
-            else:
-                listener.write_message(event_obj)
-                logger.info('Notified %s' % repr(listener))
+                    logger.info('Notified %s' % repr(listener))
 
     def add_event_listener(self, listener):
         self.event_listeners.add(listener)

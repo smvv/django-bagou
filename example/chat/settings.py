@@ -27,7 +27,7 @@ TEMPLATE_DEBUG = True
 ALLOWED_HOSTS = []
 
 BAGOU = {
-    'WEBSOCKET_URL': "ws://192.168.1.65:9000/websocket",
+    'WEBSOCKET_URL': "ws://192.168.0.129:9000/websocket",
     'QUEUE_NAME': 'bagou'
 }
 

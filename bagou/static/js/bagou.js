@@ -1,4 +1,6 @@
-BagouWebSocket = function(url, settings, protocols) {
+'use strict';
+
+var BagouWebSocket = function(url, settings, protocols) {
     var ws;
     if (protocols)
         ws = window['MozWebSocket'] ? new MozWebSocket(url, protocols) : window['WebSocket'] ? new WebSocket(url, protocols) : null;
@@ -19,41 +21,70 @@ BagouWebSocket = function(url, settings, protocols) {
                 if(arguments[i].hasOwnProperty(key))
                     arguments[0][key] = arguments[i][key];
         return arguments[0];
-    };
+    }
 
-    var settings = extend(defaultSettings, settings);
+    if (settings.events.callback) {
+        console.warn('callback event in reserved, declaration dropped.');
+        delete(settings.events.callback);
+    }
+
+    settings = extend(defaultSettings, settings);
+    settings.events.callback = function(msg) {
+        ws.oncallback(msg);
+    }
+
+    ws.settings = settings;
+    ws.callbacks = {};
 
     if (ws) {
+        // Events
         ws.onopen = settings.open;
         ws.onclose = settings.close;
         ws.onmessage = settings.message;
         ws.onmessage = function(e) {
             var m = JSON.parse(e.data);
-            var h = settings.events[m.type];
+            var h = settings.events[m.event];
             if (h)
                 h.call(this, m);
         };
-        ws._send = ws.send;
-        ws.send = function(type, data) {
-            var m = extend({type: type}, extend({}, settings.open, {type: type}));
-            m['data'] = data;
-            return this._send(JSON.stringify(m));
+        ws.oncallback = function(e) {
+            var callback = ws._getCallback(e.callbackId);
+            if (callback) callback(e)
         };
-        ws.subscribe = function(channel) {
-            ws.send('subscribe', {'channel': channel});
-        };
-        ws.unsubscribe = function(channel) {
-            ws.send('unsubscribe', {'channel': channel});
-        };
-        ws.store = function(key, value) {
-            var store = {};
-            store[key] = value;
-            ws.send('store', store);
+        // Internals
+        ws._getCallback = function(callbackId) {
+            return ws.callbacks[callbackId];
+        }
+        ws._setCallback = function(message, callback) {
+            var callbackId = uuid.v1();
+            ws.callbacks[callbackId] = callback;
+            message.callbackId = callbackId;
+            return message;
         };
         window.onunload = function() {
             ws.onclose();
             ws = null;
         };
-    };
+        // Methods
+        ws._send = ws.send;
+        ws.emit = function(event, data, callback) {
+            var m = extend({event: event}, extend({}, settings.open, {event: event}));
+            m.data = data;
+            if (callback)
+                m = ws._setCallback(m, callback);
+            return this._send(JSON.stringify(m));
+        };
+        ws.subscribe = function(channel, callback) {
+            ws.emit('subscribe', {'channel': channel}, callback);
+        };
+        ws.unsubscribe = function(channel, callback) {
+            ws.emit('unsubscribe', {'channel': channel}, callback);
+        };
+        ws.store = function(key, value, callback) {
+            var store = {};
+            store[key] = value;
+            ws.emit('store', store, callback);
+        };
+    }
     return ws;
 };

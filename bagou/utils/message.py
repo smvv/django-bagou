@@ -24,10 +24,17 @@ def __send(message):
         exchange='', routing_key=settings.BAGOU.get('QUEUE_NAME'), body=body)
 
 
-def broadcast(**kwargs):
-    __send(kwargs)
+def broadcast(channel, event, data={}, callback=None):
+    """
+    Broadcast message to channel(s).
 
+    channel     (str)(list) : Channel(s) to send message.
+    event       (str)       : Message event type.
+    data        (dict)      : Data to be attached in message.
+    callback    (str)       : Callback to be send in message.
+    """
+    if not isinstance(channel, list):
+        channel = [channel]
 
-def broadcast_to_channel(channel, **kwargs):
-    kwargs['channel'] = channel
-    __send(kwargs)
+    data = {'event': event, 'callbackId': callback, 'channel': channel, 'data': data}
+    __send(data)

@@ -10,7 +10,7 @@ from .client import PikaClient
 from .handler import WebSocketHandler
 
 logging.basicConfig()
-logger = logging.getLogger("Tornado")
+logger = logging.getLogger("tornado.general")
 logger.setLevel(logging.INFO)
 
 
@@ -20,18 +20,17 @@ class WebSocketServer(object):
         self.pika_client = PikaClient(self.io_loop)
 
         self.application = tornado.web.Application()
+        self.application.add_handlers(r'.*', [
+            (r"%s" % settings.BAGOU.get('WEBSOCKET_PATH'), WebSocketHandler)])
         self.application.pika_client = self.pika_client
 
         self.hostname = "%s:%s" % (
             settings.BAGOU.get('WEBSOCKET_ADDR'), settings.BAGOU.get('WEBSOCKET_PORT'))
 
-    def _add_default_handlers(self):
-        self.application.add_handlers(r'.*', [
-            (r"%s" % settings.BAGOU.get('WEBSOCKET_PATH'), WebSocketHandler)])
-
     def run(self):
-        self._add_default_handlers()
-
+        logger.info('Listening on %s:%s...' % (
+            settings.BAGOU.get('WEBSOCKET_ADDR'),
+            settings.BAGOU.get('WEBSOCKET_PORT')))
         self.application.pika_client.connect()
         self.application.listen(int(settings.BAGOU.get('WEBSOCKET_PORT')))
         self.io_loop.start()
