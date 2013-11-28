@@ -12,6 +12,7 @@ Demo
 ----
 
 ::
+
     git clone https://github.com/socketubs/django-bagou.git
     cd django-bagou/example
     virtualenv virtenv
