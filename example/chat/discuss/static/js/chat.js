@@ -79,6 +79,9 @@ function loadChat() {
   function join() {
     var username = document.getElementById('username').value;
     var room = document.getElementById('room').value;
+    if (!username || !room)
+      return;
+
     ws.store('username', username, function() {
       ws.subscribe(room);
       ws.auth();
@@ -89,14 +92,19 @@ function loadChat() {
 
     document.getElementsByClassName('home')[0].style.display = 'none';
     document.getElementsByClassName('room')[0].style.display = '';
+    document.getElementById('field').focus();
   };
   document.getElementById('join').onclick = function(){
-    join();
-  };
-  document.getElementById('room').onkeypress = function(e){
-    if (e.keyCode == 13) {
+    if (e.keyCode == 13)
       join();
-    }
+  };
+  document.getElementById('username').onkeypress = function(e){
+    if (e.keyCode == 13)
+      join();
+  }
+  document.getElementById('room').onkeypress = function(e){
+    if (e.keyCode == 13)
+      join();
   }
   // Other
   window.onfocus = function() {
