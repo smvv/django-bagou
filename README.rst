@@ -10,8 +10,8 @@ Server is Tornado WebSocketHandler with a PikaClient consumer.
 
 Take a look at the simple demo chat_.
 
-Demo
-----
+Installation
+------------
 
 ::
 
