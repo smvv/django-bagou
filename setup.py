@@ -27,7 +27,7 @@ setup(
         'bagou.management.commands'],
     include_package_data=True,
     license='MIT License',
-    description='Django Websocket for Humans',
+    description='Django Websocket for Django',
     long_description=README,
     url='https://github.com/socketubs/bagou',
     author='Geoffrey Lehée',
