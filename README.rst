@@ -8,6 +8,8 @@ synchronous application with RabbitMQ as message bus.
 
 Server is Tornado WebSocketHandler with a PikaClient consumer.
 
+Take a look at the simple demo chat_.
+
 Demo
 ----
 
@@ -56,3 +58,6 @@ Todo
  * User authentification based on sessionid
  * Integrated with Celery ?
  * Helpers for getting channels
+
+
+.. _chat: http://chat.socketubs.org/
