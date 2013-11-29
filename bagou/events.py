@@ -83,7 +83,7 @@ class Event(object):
             no_channel = not pattern and not client.channels
             if self.name.endswith("subscribe") and pattern:
                 logging.error(args)
-                matches = [pattern.match(args[0])]
+                matches = [pattern.match(args[0].name)]
             else:
                 matches = [pattern.match(c) for c in client.channels if pattern]
 

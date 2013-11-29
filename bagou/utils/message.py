@@ -4,6 +4,8 @@ import pika
 
 from django.conf import settings
 
+from ..channel import Channel
+
 
 def __send(message):
     cred = pika.PlainCredentials(
@@ -24,17 +26,25 @@ def __send(message):
         exchange='', routing_key=settings.BAGOU.get('QUEUE_NAME'), body=body)
 
 
-def broadcast(channel, event, data={}, callback=None):
+def broadcast(channels, event, data={}, callback=None):
     """
     Broadcast message to channel(s).
 
-    channel     (str)(list) : Channel(s) to send message.
+    channels    (str)(list) : Channel(s) to send message.
     event       (str)       : Message event type.
     data        (dict)      : Data to be attached in message.
     callback    (str)       : Callback to be send in message.
     """
-    if not isinstance(channel, list):
-        channel = [channel]
+    if not isinstance(channels, list) and not isinstance(channels, dict):
+        channels = [channels]
 
-    data = {'event': event, 'callbackId': callback, 'channel': channel, 'data': data}
+    serializable_channels = []
+    for channel in channels:
+        serializable_channels.append(channel)
+
+    data = {
+        'event': event,
+        'callbackId': callback,
+        'channel': serializable_channels,
+        'data': data}
     __send(data)

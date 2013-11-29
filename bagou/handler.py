@@ -5,6 +5,7 @@ import tornado.websocket
 
 from django.core import serializers
 from django.contrib.auth.models import User
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.models import Session
 
 from .events import on_open
@@ -15,6 +16,8 @@ from .events import on_subscribe
 from .events import on_unsubscribe
 from .events import on_authenticate
 
+from .channel import Channel
+
 logging.basicConfig()
 logger = logging.getLogger("tornado.handler")
 logger.setLevel(logging.INFO)
@@ -22,9 +25,8 @@ logger.setLevel(logging.INFO)
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def open(self, *args, **kwargs):
-        self.channels = []
-        self.authenticated = False
-        self.user = None
+        self.channels = {}
+        self.user = AnonymousUser()
 
         self.store = {}
 
@@ -65,20 +67,38 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         on_authenticate.send(self, message, session_id)
 
     def _on_subscribe(self, message):
-        channel = message.get('data', {}).get('channel')
+        channel_name = message.get('data', {}).get('channel')
         callback_id = message.get('callbackId')
-        if channel:
-            logger.info("Subscribing to '%s' channel." % channel)
-            self.channels.append(channel)
+        if channel_name:
+            logger.info("Subscribing to '%s' channel." % channel_name)
+            if channel_name not in self.application.channels:
+                channel = Channel(name=channel_name, owner=self)
+                self.application.channels[channel_name] = channel
+            else:
+                channel = self.application.channels[channel_name]
+                self.application.channels[channel_name].add_client(self)
+
+            self.channels[channel_name] = channel
+
+            logger.info('Calling on_subscribe event handlers')
             on_subscribe.send(self, message, channel, callback_id)
 
     def _on_unsubscribe(self, message):
-        channel = message.get('data', {}).get('channel')
+        channel_name = message.get('data', {}).get('channel')
         callback_id = message.get('callbackId')
-        if channel:
-            logger.info("Unsubscribing to '%s' channel." % channel)
-            self.channels.remove(channel)
-            on_unsubscribe.send(self, message, channel, callback_id)
+        if channel_name:
+            logger.info("Unsubscribing to '%s' channel." % channel_name)
+            if channel_name in self.application.channels:
+                channel = self.application.channels[channel_name]
+                if self in channel.clients:
+                    channel.remove_client(self)
+                    del self.channels[channel_name]
+
+                    if not channel.client and not self.persistent:
+                        del self.application.channels[channel_name]
+
+                logger.info('Calling on_unsubscribe event handlers')
+                on_unsubscribe.send(self, message, channel, callback_id)
 
     def _on_store(self, message):
         callback_id = message.get('callbackId')

@@ -3,3 +3,7 @@
 
 class BagouException(Exception):
     pass
+
+
+class BagouChannelException(Exception):
+    pass

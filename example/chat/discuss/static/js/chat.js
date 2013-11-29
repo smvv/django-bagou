@@ -8,6 +8,13 @@ function isReady(callback) {
 }
 
 function loadChat() {
+  var focused = true;
+  var counter = 0;
+  var favicon=new Favico({
+    type : 'rectangle',
+    animation: 'slide',
+  });
+  favicon.badge(counter);
   try {
     var ws = BagouWebSocket(WEBSOCKET_URL, {
       open: function() {
@@ -30,14 +37,28 @@ function loadChat() {
   function message(msg){
     var alerts = document.getElementById('alerts');
     alerts.innerHTML += '<p class="message">' + msg + '</p>';
+    if (!focused)
+      counter += 1;
+      favicon.badge(counter);
   };
   function send(){
     var field = document.getElementById('field');
-    ws.emit('message', field.value);
+    ws.emit('message', {'content': field.value});
   };
   function setStatus(status) {
     var statusBar = document.getElementsByClassName('status')[0];
-    statusBar.innerHTML = 'Socket status: ' + status;
+    var statusText = '';
+    if (status == 0)
+      statusText = 'Connecting';
+    else if (status == 1)
+      statusText = 'Connected';
+    else if (status == 2)
+      statusText = 'Disconnecting';
+    else if (status == 3)
+      statusText = 'Disconnected';
+    else
+      statusText = 'Unknown';
+    statusBar.innerHTML = 'Connection status: ' + statusText;
   };
   // ROOM
   document.getElementById('submit').onclick = function(){
@@ -76,5 +97,14 @@ function loadChat() {
     if (e.keyCode == 13) {
       join();
     }
+  }
+  // Other
+  window.onfocus = function() {
+    focused = true;
+    counter = 0;
+    favicon.badge(counter);
+  }
+  window.onblur = function() {
+    focused = false;
   }
 };

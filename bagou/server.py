@@ -37,6 +37,8 @@ class WebSocketServer(object):
         logger.info('Listening on %s:%s...' % (
             settings.BAGOU.get('WEBSOCKET_ADDR'),
             settings.BAGOU.get('WEBSOCKET_PORT')))
+
+        self.application.channels = {}
         self.application.pika_client.connect()
         self.application.listen(int(settings.BAGOU.get('WEBSOCKET_PORT')))
         self.io_loop.start()

@@ -3,9 +3,11 @@
 <head>
     {% load bagou_tags %}
     {% bagou_static %}
+    <script src="{{ STATIC_URL }}js/favico-0.3.3.min.js"></script>
     <script src="{{ STATIC_URL }}js/chat.js"></script>
     <link rel="stylesheet" href="{{ STATIC_URL }}css/chat.css" type="text/css">
     <title>Bagou - Chat</title>
+    <link rel="shortcut icon" href="{{ STATIC_URL }}images/favicon.ico" type="image/x-icon">
     <script type="text/javascript">
       isReady(function() {
         loadChat();
