@@ -27,7 +27,7 @@ setup(
         'bagou.management.commands'],
     include_package_data=True,
     license='MIT License',
-    description='A simple Django app to conduct Web-based polls.',
+    description='Django Websocket for Humans',
     long_description=README,
     url='https://github.com/socketubs/bagou',
     author='Geoffrey Lehée',
@@ -40,7 +40,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        # replace these appropriately if you are using Python 3
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Topic :: Internet :: WWW/HTTP',
