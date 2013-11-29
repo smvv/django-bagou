@@ -3,3 +3,4 @@ virtenv
 *.egg-info
 dist
 *.sqlite3
+docs/_build
