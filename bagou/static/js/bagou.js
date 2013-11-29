@@ -22,6 +22,22 @@ var BagouWebSocket = function(url, settings, protocols) {
                     arguments[0][key] = arguments[i][key];
         return arguments[0];
     }
+    function getCookies() {
+        var cookies = {};
+        var all = document.cookie;
+        if (all === "")
+            return cookies;
+        var list = all.split("; ");
+        for(var i = 0; i < list.length; i++) {
+            var cookie = list[i];
+            var p = cookie.indexOf("=");
+            var name = cookie.substring(0,p);
+            var value = cookie.substring(p+1);
+            value = decodeURIComponent(value);
+            cookies[name] = value;
+        }
+        return cookies;
+    }
 
     if (settings.events.callback) {
         console.warn('callback event in reserved, declaration dropped.');
@@ -34,7 +50,8 @@ var BagouWebSocket = function(url, settings, protocols) {
     }
 
     ws.settings = settings;
-    ws.callbacks = {};
+    ws.authenticated = true;
+    var callbacks = {};
 
     if (ws) {
         // Events
@@ -53,11 +70,11 @@ var BagouWebSocket = function(url, settings, protocols) {
         };
         // Internals
         ws._getCallback = function(callbackId) {
-            return ws.callbacks[callbackId];
+            return callbacks[callbackId];
         }
         ws._setCallback = function(message, callback) {
             var callbackId = uuid.v1();
-            ws.callbacks[callbackId] = callback;
+            callbacks[callbackId] = callback;
             message.callbackId = callbackId;
             return message;
         };
@@ -73,6 +90,18 @@ var BagouWebSocket = function(url, settings, protocols) {
             if (callback)
                 m = ws._setCallback(m, callback);
             return this._send(JSON.stringify(m));
+        };
+        ws.auth = function(callback) {
+            var cookies = getCookies();
+            if (!cookies.sessionid)
+                console.warn('No authentification available.');
+            else
+                ws.emit('authenticate', {'sessionId': cookies.sessionid}, function(message) {
+                    if (message.data.success)
+                        ws.authenticated = true;
+                        ws.user = message.data.user;
+                    if (callback) callback(message);
+                });
         };
         ws.subscribe = function(channel, callback) {
             ws.emit('subscribe', {'channel': channel}, callback);

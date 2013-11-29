@@ -64,7 +64,7 @@ class Event(object):
         being sent to the channel pattern.
         """
         # Call at least callback if no handler set
-        if message and not self.handlers:
+        if message and not self.handlers and self.name is not 'on_authenticate':
             callback = message.get('callbackId')
             if callback:
                 client.jsonify(callbackId=callback, event='callback')
@@ -73,6 +73,11 @@ class Event(object):
             # Simple handler for open and close
             if self.name in ['on_open', 'on_close']:
                 handler(client)
+                continue
+
+            if self.name is 'on_authenticate':
+                session_id = message.get('sessionid')
+                handler(client, session_id)
                 continue
 
             no_channel = not pattern and not client.channels
@@ -93,9 +98,10 @@ on_message = Event()
 on_callback = Event()
 on_subscribe = Event()
 on_unsubscribe = Event()
-on_store = Event(supports_channels=False)
 on_open = Event(supports_channels=False)
 on_close = Event(supports_channels=False)
+on_store = Event(supports_channels=False)
+on_authenticate = Event(supports_channels=False)
 
 # Give each event a name attribute.
 for k, v in globals().items():

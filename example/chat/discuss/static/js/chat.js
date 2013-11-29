@@ -60,6 +60,7 @@ function loadChat() {
     var room = document.getElementById('room').value;
     ws.store('username', username, function() {
       ws.subscribe(room);
+      ws.auth();
     });
 
     document.getElementsByClassName('room-name')[0].innerHTML = room;

@@ -5,9 +5,9 @@ import tornado.ioloop
 import tornado.template
 
 from django.conf import settings
+from django.utils.importlib import import_module
 
 from .client import PikaClient
-from .handler import WebSocketHandler
 
 logging.basicConfig()
 logger = logging.getLogger("tornado.general")
@@ -19,9 +19,15 @@ class WebSocketServer(object):
         self.io_loop = tornado.ioloop.IOLoop.instance()
         self.pika_client = PikaClient(self.io_loop)
 
+        self.handler_module = import_module(
+            '.'.join(settings.BAGOU.get('DEFAULT_HANDLER_CLASS').split('.')[:-1]))
+        self.handler_class = getattr(
+            self.handler_module,
+            settings.BAGOU.get('DEFAULT_HANDLER_CLASS').split('.')[-1])
+
         self.application = tornado.web.Application()
         self.application.add_handlers(r'.*', [
-            (r"%s" % settings.BAGOU.get('WEBSOCKET_PATH'), WebSocketHandler)])
+            (r"%s" % settings.BAGOU.get('WEBSOCKET_PATH'), self.handler_class)])
         self.application.pika_client = self.pika_client
 
         self.hostname = "%s:%s" % (

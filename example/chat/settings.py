@@ -30,6 +30,7 @@ BAGOU = {
     'WEBSOCKET_URL': "ws://192.168.0.129:9000/websocket",
     'QUEUE_NAME': 'bagou'
 }
+SESSION_COOKIE_HTTPONLY = False
 
 STATICFILE_DIRS = (
     os.path.join(BASE_DIR, 'chat', 'discuss', 'static'), )
