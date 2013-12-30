@@ -91,18 +91,6 @@ var BagouWebSocket = function(url, settings, protocols) {
                 m = ws._setCallback(m, callback);
             return this._send(JSON.stringify(m));
         };
-        ws.auth = function(callback) {
-            var cookies = getCookies();
-            if (!cookies.sessionid)
-                console.warn('No authentification available.');
-            else
-                ws.emit('authenticate', {'sessionId': cookies.sessionid}, function(message) {
-                    if (message.data.success)
-                        ws.authenticated = true;
-                        ws.user = message.data.user;
-                    if (callback) callback(message);
-                });
-        };
         ws.subscribe = function(channel, callback) {
             ws.emit('subscribe', {'channel': channel}, callback);
         };

@@ -21,10 +21,7 @@ def get_version():
 setup(
     name='django-bagou',
     version=get_version(),
-    packages=[
-        'bagou',
-        'bagou.management',
-        'bagou.management.commands'],
+    packages=['bagou'],
     include_package_data=True,
     license='MIT License',
     description='Django Websocket for Django',

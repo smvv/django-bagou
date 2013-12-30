@@ -4,8 +4,6 @@ import logging
 from django.utils.importlib import import_module
 from django.conf import settings as django_settings
 
-from .exceptions import BagouException
-
 if sys.version_info[0] == 3:
     from urllib.parse import urlparse
 else:
@@ -46,15 +44,6 @@ settings['AMQP_BROKER_PATH'] = __amqp_url.path
 
 # Authentication
 settings.setdefault('AUTH', True)
-if settings['AUTH'] and django_settings.SESSION_COOKIE_HTTPONLY:
-    raise BagouException(
-        'Bagou need SESSION_COOKIE_HTTPONLY = False to have authentification.')
-if settings['AUTH']:
-    logger.warning(
-        'Please read '
-        'https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-SESSION_COOKIE_HTTPONLY'
-        ' to known consequences.')
-
 
 # Try and import an ``events`` module in each installed app,
 # to ensure all event handlers are connected.

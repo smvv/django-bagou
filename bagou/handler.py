@@ -35,36 +35,39 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         on_open.send(self)
         logger.info("WebSocket opened")
 
+    def authenticate(self):
+        if not self.user.is_authenticated():
+            session_id = None
+            cookie = self.request.headers.get('Cookie')
+            for key, value in cookie.split(';'):
+                if key.strip().startswith('sessionid'):
+                    session_id = value.split('=').strip()
+                    break
+
+        if session_id:
+            data = {}
+            try:
+                session = Session.objects.get(session_key=session_id)
+                uid = session.get_decoded().get('_auth_user_id')
+                user = User.objects.get(pk=uid)
+                if user:
+                    self.user = user
+                    self.authenticated = True
+                    logger.info('User authenticated')
+
+                    user_json = serializers.serialize('json', [self.user])[0]
+                    data.update({'user': user_json})
+                else:
+                    logger.info('User failed to authenticate.')
+            except (Session.DoesNotExist, User.DoesNotExist):
+                logger.warning('User send bad sessionid.')
+
+            on_authenticate.send(self, session_id)
+
     def on_close(self):
         logger.info("WebSocket closed")
         self.application.pika_client.remove_event_listener(self)
         on_close.send(self)
-
-    def _on_authenticate(self, message):
-        session_id = message.get('data', {}).get('sessionId')
-        data = {}
-
-        try:
-            session = Session.objects.get(session_key=session_id)
-            uid = session.get_decoded().get('_auth_user_id')
-            user = User.objects.get(pk=uid)
-            if user:
-                self.user = user
-                self.authenticated = True
-                logger.info('User authenticated')
-
-                user_json = serializers.serialize('json', [self.user])[0]
-                data.update({'user': user_json})
-            else:
-                logger.info('User failed to authenticate.')
-        except (Session.DoesNotExist, User.DoesNotExist):
-            logger.warning('User send bad sessionid.')
-
-        self.jsonify(
-            event='callback',
-            data=data,
-            callbackId=message.get('callbackId'))
-        on_authenticate.send(self, message, session_id)
 
     def _on_subscribe(self, message):
         channel_name = message.get('data', {}).get('channel')
