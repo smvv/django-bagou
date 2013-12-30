@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
+import sys
 import logging
-from urlparse import urlparse
 from django.utils.importlib import import_module
 from django.conf import settings as django_settings
 
 from .exceptions import BagouException
+
+if sys.version_info[0] == 3:
+    from urllib.parse import urlparse
+else:
+    from urlparse import urlparse
+
 
 __version__ = "0.0.1"
 

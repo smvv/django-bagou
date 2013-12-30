@@ -104,6 +104,7 @@ on_store = Event(supports_channels=False)
 on_authenticate = Event(supports_channels=False)
 
 # Give each event a name attribute.
-for k, v in globals().items():
+for k in list(globals()):
+    v = globals()[k]
     if isinstance(v, Event):
         setattr(v, "name", k)
