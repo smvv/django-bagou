@@ -35,10 +35,17 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         on_open.send(self)
         logger.info("WebSocket opened")
 
-    def authenticate(self):
-        if not self.user.is_authenticated():
-            session_id = None
-            cookie = self.request.headers.get('Cookie')
+    def on_close(self):
+        logger.info("WebSocket closed")
+        self.application.pika_client.remove_event_listener(self)
+        on_close.send(self)
+
+    def _on_authenticate(self, message):
+        session_id = None
+        data = {}
+
+        cookie = self.request.headers.get('Cookie')
+        if cookie:
             for key, value in cookie.split(';'):
                 if key.strip().startswith('sessionid'):
                     session_id = value.split('=').strip()
@@ -62,12 +69,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             except (Session.DoesNotExist, User.DoesNotExist):
                 logger.warning('User send bad sessionid.')
 
+            self.jsonify(
+                event='callback',
+                data=data,
+                callbackId=message.get('callbackId'))
             on_authenticate.send(self, session_id)
-
-    def on_close(self):
-        logger.info("WebSocket closed")
-        self.application.pika_client.remove_event_listener(self)
-        on_close.send(self)
 
     def _on_subscribe(self, message):
         channel_name = message.get('data', {}).get('channel')

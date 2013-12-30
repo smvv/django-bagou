@@ -91,6 +91,14 @@ var BagouWebSocket = function(url, settings, protocols) {
                 m = ws._setCallback(m, callback);
             return this._send(JSON.stringify(m));
         };
+        ws.auth = function(callback) {
+            ws.emit('authenticate', {}, function(message) {
+                if (message.data.success)
+                    ws.authenticated = true;
+                    ws.user = message.data.user;
+                if (callback) callback(message);
+            });
+        };
         ws.subscribe = function(channel, callback) {
             ws.emit('subscribe', {'channel': channel}, callback);
         };

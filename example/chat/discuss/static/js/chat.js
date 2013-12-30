@@ -95,7 +95,6 @@ function loadChat() {
     document.getElementById('field').focus();
   };
   document.getElementById('join').onclick = function(){
-    if (e.keyCode == 13)
       join();
   };
   document.getElementById('username').onkeypress = function(e){
