@@ -21,12 +21,12 @@ Sending
 Send a message is a little more complexe.
 You can send message to websocket after an incoming message, easy.
 
-But when you want to send message in a Celery_ task for example, or after an SQL update
+But when you want to send message in a Celery_ task, or after an SQL update
 statement, you'll have to use an easy method which do all the job.
 
 This is it.
 
-You can broadcast message when you want, which will internaly be publish on RabbitAMQ,
+You can broadcast message when you want, which will internaly be publish on RabbitMQ,
 consumed by Pika client. Pika which run in the same loop as Tornado, sent message to connected websockets.
 
 Client side

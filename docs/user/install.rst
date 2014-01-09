@@ -22,15 +22,8 @@ Has Bagou is developed on GitHub_, you can find the code `here <https://github.c
 Settings
 --------
 
-Add _Bagou_ in your ``INSTALLED_APPS`` in ``settings.py``.
-
-If you want to use Django authentication over websocket you will need to set: ::
-
-    SESSION_COOKIE_HTTPONLY = False
-
-But please, take a look at this `Django recommendation <https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-SESSION_COOKIE_HTTPONLY>`_.
-
-All _Bagou_ settings are stored in a `Dict`` in ``settings.py``.
+Add *Bagou* in your ``INSTALLED_APPS`` in ``settings.py``.
+All *Bagou* settings are stored in a `Dict`` in ``settings.py``.
 
 ::
 
@@ -44,8 +37,8 @@ All _Bagou_ settings are stored in a `Dict`` in ``settings.py``.
 
 - ``DEFAULT_HANDLER_CLASS``: ``Class`` which dispatch all incoming messages.
 - ``WEBSOCKET_URL``: URL where ``BagouWebSocket`` javascript ``Object`` will connect to.
-- ``AMQP_BROKER_URL``: URL for _Pika_ client to _RabbitMQ_.
-- ``QUEUE_NAME``: _AMQP_ queue for _Pika_.
+- ``AMQP_BROKER_URL``: URL for *Pika* client to *RabbitMQ*.
+- ``QUEUE_NAME``: *AMQP* queue for *Pika*.
 - ``AUTH``: Enable Django authentication over websocket.
 
 .. _Django: https://www.djangoproject.com/
