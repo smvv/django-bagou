@@ -6,10 +6,10 @@ Configuration
 Server
 ------
 
-Incoming messages
-~~~~~~~~~~~~~~~~~
+You can handle incoming messages with methods which you'll have to decorator with appropriate
+event. They are called **event handlers**.
 
-Its very easy to handle incoming messages with _Bagou_. First thing to do is to create
+Its very easy to handle incoming messages with **Bagou**. First thing to do is to create
 ``events.py`` in you application folder.
 
 ::
@@ -54,4 +54,27 @@ just anwser to the current socket like that:
 Client
 ------
 
+On the client side, you have to use ``BagouWebSocket`` which is an extended Object of ``WebSocket``.
 
+**Bagou** give you all tools you need to set up real time events in your application.
+First of all, import javascript libraries.
+
+::
+
+    {% load bagou_tags %}
+    {% bagou_static %}
+
+    <script type="text/javascript">
+      var ws = BagouWebSocket(WEBSOCKET_URL, {
+        open: function {
+          console.log('Socket opened');
+          ws.subscribe('bagou-channel');
+        },
+        events: {
+          message: function(msg) {
+            console.log('Receiving message');
+            ws.emit('Message received');
+          }
+        }
+      });
+    </script>

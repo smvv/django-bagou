@@ -46,12 +46,22 @@ websocket background information, then focuses on step-by-step instructions for 
 very first Django application.
 
 .. toctree::
-   :maxdepth: 2
+  :maxdepth: 2
 
-   user/intro
-   user/install
-   user/configuration
-   user/authentication
+  user/intro
+  user/install
+  user/configuration
+  user/authentication
+
+API Documentation
+-----------------
+
+.. toctree::
+  :maxdepth: 2
+
+  api/events
+
+
 
 
 Indices and tables
