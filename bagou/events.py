@@ -63,21 +63,21 @@ class Event(object):
         In the case of subscribe/unsubscribe, match the channel arg
         being sent to the channel pattern.
         """
+        callback = message.get('callbackId')
         # Call at least callback if no handler set
         if message and not self.handlers and self.name is not 'on_authenticate':
-            callback = message.get('callbackId')
             if callback:
                 client.jsonify(callbackId=callback, event='callback')
 
         for handler, pattern in self.handlers:
             # Simple handler for open and close
             if self.name in ['on_open', 'on_close']:
-                handler(client)
+                handler(client, callback)
                 continue
 
             if self.name is 'on_authenticate':
                 session_id = message.get('sessionid')
-                handler(client, session_id)
+                handler(client, session_id, callback)
                 continue
 
             no_channel = not pattern and not client.channels
