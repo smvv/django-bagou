@@ -44,11 +44,12 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         session_id = None
         data = {}
 
-        cookie = self.request.headers.get('Cookie')
-        if cookie:
-            for key, value in cookie.split(';'):
-                if key.strip().startswith('sessionid'):
-                    session_id = value.split('=').strip()
+        cookies = self.request.headers.get('Cookie')
+        if cookies:
+            logger.info('Cookies: ' + cookies);
+            for cookie in cookies.split(';'):
+                if cookie.strip().startswith('sessionid='):
+                    session_id = cookie.split('=')[1].strip()
                     break
 
         if session_id:

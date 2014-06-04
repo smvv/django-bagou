@@ -63,7 +63,11 @@ class Event(object):
         In the case of subscribe/unsubscribe, match the channel arg
         being sent to the channel pattern.
         """
-        callback = message.get('callbackId')
+        if message:
+            callback = message.get('callbackId')
+        else:
+            callback = None
+
         # Call at least callback if no handler set
         if message and not self.handlers and self.name is not 'on_authenticate':
             if callback:
