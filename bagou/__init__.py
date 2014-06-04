@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 import sys
 import logging
-from django.utils.importlib import import_module
-from django.conf import settings as django_settings
+
+try:
+    from django.utils.importlib import import_module
+    from django.conf import settings as django_settings
+    import_events_module = True
+except ImportError:
+    import settings as django_settings
+    import_events_module = False
 
 if sys.version_info[0] == 3:
     from urllib.parse import urlparse
@@ -47,9 +53,10 @@ settings.setdefault('AUTH', True)
 
 # Try and import an ``events`` module in each installed app,
 # to ensure all event handlers are connected.
-for app in django_settings.INSTALLED_APPS:
-    try:
-        import_module("%s.events" % app)
-    except ImportError as err:
-        logger.info('No events found in %s (%s)' % (app, err))
-        pass
+if import_events_module:
+    for app in django_settings.INSTALLED_APPS:
+        try:
+            import_module("%s.events" % app)
+            logger.info('events module found in %s' % app)
+        except ImportError as err:
+            pass
